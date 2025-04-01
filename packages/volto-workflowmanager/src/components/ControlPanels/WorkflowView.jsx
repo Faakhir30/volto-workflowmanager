@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
@@ -18,6 +18,15 @@ import {
   getWorkflows,
 } from '../../actions';
 import { useHistory } from 'react-router-dom';
+import ReactFlow, {
+  Controls,
+  Background,
+  MiniMap,
+  useNodesState,
+  useEdgesState,
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+
 const WorkflowView = ({ workflowId }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -28,10 +37,54 @@ const WorkflowView = ({ workflowId }) => {
     state.workflow.workflows.items.find((w) => w.id === workflowId),
   );
 
+  // Initialize nodes and edges states
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  // Transform workflow data for ReactFlow
+  useEffect(() => {
+    if (!workflow) return;
+
+    // Create nodes from states
+    const flowNodes = workflow.states.map((state, index) => ({
+      id: state.id,
+      type: 'default',
+      data: { label: state.title },
+      position: {
+        x:
+          100 +
+          Math.cos(index * ((2 * Math.PI) / workflow.states.length)) * 200,
+        y:
+          200 +
+          Math.sin(index * ((2 * Math.PI) / workflow.states.length)) * 200,
+      },
+      style: {
+        background: '#ffcc99',
+        border: '1px solid #999',
+        borderRadius: '3px',
+        padding: '10px',
+        width: 150,
+      },
+    }));
+
+    // Create edges from transitions
+    const flowEdges = workflow.transitions.map((transition) => ({
+      id: transition.id,
+      source: transition.id,
+      target: transition.new_state_id || transition.id,
+      label: transition.title,
+      type: 'smoothstep',
+      animated: true,
+      style: { stroke: '#999' },
+    }));
+
+    setNodes(flowNodes);
+    setEdges(flowEdges);
+  }, [workflow, setNodes, setEdges]);
+
   useEffect(() => {
     if (workflowId) {
       dispatch(getWorkflowGraph(workflowId));
-      // dispatch(validateWorkflow(workflowId));
     }
   }, [dispatch, workflowId]);
 
@@ -57,6 +110,18 @@ const WorkflowView = ({ workflowId }) => {
               You are currently working on "{workflow.id}" workflow
             </Header.Subheader>
           </Header>
+          <textarea
+            defaultValue={workflow.description || ''}
+            placeholder="Enter workflow description..."
+            style={{
+              width: '100%',
+              minHeight: '60px',
+              marginTop: '1em',
+              padding: '0.5em',
+              border: 'none',
+              borderRadius: '4px',
+            }}
+          />
         </Segment>
 
         <Segment>
@@ -93,8 +158,8 @@ const WorkflowView = ({ workflowId }) => {
         )}
 
         <Segment>
-          <Grid columns={2}>
-            <Grid.Column>
+          <Grid columns={3}>
+            <Grid.Column width={3}>
               <Header as="h3">States</Header>
               <Dropdown
                 placeholder="Select state"
@@ -111,9 +176,7 @@ const WorkflowView = ({ workflowId }) => {
                 <Button>Find</Button>
                 <Button>Clear</Button>
               </Button.Group>
-            </Grid.Column>
 
-            <Grid.Column>
               <Header as="h3">Transitions</Header>
               <Dropdown
                 placeholder="Select transition"
@@ -131,21 +194,30 @@ const WorkflowView = ({ workflowId }) => {
                 <Button>Clear</Button>
               </Button.Group>
             </Grid.Column>
+
+            <Grid.Column width={9} style={{ height: '500px' }}>
+              {graph.loading ? (
+                <Loader active>Loading workflow graph...</Loader>
+              ) : (
+                <div style={{ width: '100%', height: '100%' }}>
+                  <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    fitView
+                  >
+                    <Background />
+                    <Controls />
+                    <MiniMap />
+                  </ReactFlow>
+                </div>
+              )}
+            </Grid.Column>
           </Grid>
         </Segment>
 
-        <Segment>
-          {graph.loading ? (
-            <Loader active>Loading workflow graph...</Loader>
-          ) : (
-            graph.data && (
-              <img
-                src={`data:image/gif;base64,${graph.data.data}`}
-                alt="Workflow graph"
-              />
-            )
-          )}
-        </Segment>
+        <Segment></Segment>
       </Segment.Group>
     </Container>
   );
