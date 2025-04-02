@@ -1,202 +1,53 @@
 # volto.workflowmanager (volto-workflowmanager)
 
-Workflow manager for volto
+A PoC Frontend add-on of Workflow Manager for Volto. For backend add-on see https://github.com/Faakhir30/plone.workflowmanager .
+## Demo
+[workflowmanager-initial-poc.webm](https://github.com/user-attachments/assets/dfe130ba-b111-466b-af33-fc2550fb1406)
 
-[![npm](https://img.shields.io/npm/v/volto-workflowmanager)](https://www.npmjs.com/package/volto-workflowmanager)
-[![](https://img.shields.io/badge/-Storybook-ff4785?logo=Storybook&logoColor=white&style=flat-square)](https://collective.github.io/volto-workflowmanager/)
-[![Code analysis checks](https://github.com/collective/volto-workflowmanager/actions/workflows/code.yml/badge.svg)](https://github.com/collective/volto-workflowmanager/actions/workflows/code.yml)
-[![Unit tests](https://github.com/collective/volto-workflowmanager/actions/workflows/unit.yml/badge.svg)](https://github.com/collective/volto-workflowmanager/actions/workflows/unit.yml)
+A typical volto add-on structure
+
+![image](https://github.com/user-attachments/assets/b65f1430-4e8c-469e-bf08-5a46ca853391)
+
 
 ## Features
+This addon adds the following features to a Volto site
+- adds a controlpanel item for workflow manager
+- shows available custom workflows and Plone-shipped workflows
+- adds the ability to create/initialize a new workflow
+- ability to clone from a workflow
+- A UI mockup for an individual workflow management page with some working features.
+- the ability to do a `sanity check` for a workflow's correctness.
+- An interactive and based workflow graph of the Finite State Machine of the workflow
+- ability to look and search for a state or transition in the graph
+- deletion of a workflow.
 
-<!-- List your awesome features here -->
+## Future Roadmap
+**As this is mere PoC, I haven't followed best Plone practices**, so stopping this here, however the next steps in this PoC would have been the following:
+
+### Features
+- ability to add new states, clone states with transitions
+- Create transitions and complete flow pending. Support guards, permissions...
+- Complete flow of assigning a workflow to a content-type
+- edit individual states and transitions in-depth features
+- Update Security feature
+- delete states and transitions
+  
+### UI
+- Create transitions from the graph by connecting 2 states
+- Maybe make UI easier by adding common actions as special options on right-clicking on a state and transition
+- Reorder Graph logic
 
 ## Installation
 
-To install your project, you must choose the method appropriate to your version of Volto.
+The easiest installation would be installing this repo and doing `make install` followed by a `pnpm start`.
+Otherwise, add this add-on to an existing Volto project to test using this repo from the git source URL.
 
-
-### Volto 17 and earlier
-
-Create a new Volto project (you can skip this step if you already have one):
-
-```
-npm install -g yo @plone/generator-volto
-yo @plone/volto my-volto-project --addon volto-workflowmanager
-cd my-volto-project
-```
-
-Add `volto-workflowmanager` to your package.json:
-
-```JSON
-"addons": [
-    "volto-workflowmanager"
-],
-
-"dependencies": {
-    "volto-workflowmanager": "*"
-}
-```
-
-Download and install the new add-on by running:
-
-```
-yarn install
-```
-
-Start volto with:
-
-```
-yarn start
-```
-
-### Volto 18 and later
-
-Add `volto-workflowmanager` to your `package.json`:
-
-```json
-"dependencies": {
-    "volto-workflowmanager": "*"
-}
-```
-
-Add `volto-workflowmanager` to your `volto.config.js`:
-
-```javascript
-const addons = ['volto-workflowmanager'];
-```
-
-If this package provides a Volto theme, and you want to activate it, then add the following to your `volto.config.js`:
-
-```javascript
-const theme = 'volto-workflowmanager';
-```
+**Note**: You must also install the [backend add-on](https://github.com/Faakhir30/plone.workflowmanager/) to make this work.
 
 ## Test installation
 
-Visit http://localhost:3000/ in a browser, login, and check the awesome new features.
+Visit http://localhost:3000/ in a browser, login, visit site-setup and check the awesome new features.
 
-
-## Development
-
-The development of this add-on is done in isolation using a new approach using pnpm workspaces and latest `mrs-developer` and other Volto core improvements.
-For this reason, it only works with pnpm and Volto 18 (currently in alpha).
-
-
-### Pre-requisites
-
--   [Node.js](https://6.docs.plone.org/install/create-project.html#node-js)
--   [Make](https://6.docs.plone.org/install/create-project.html#make)
--   [Docker](https://6.docs.plone.org/install/create-project.html#docker)
-
-
-### Make convenience commands
-
-Run `make help` to list the available commands.
-
-```text
-help                             Show this help
-install                          Installs the add-on in a development environment
-start                            Starts Volto, allowing reloading of the add-on during development
-build                            Build a production bundle for distribution of the project with the add-on
-i18n                             Sync i18n
-ci-i18n                          Check if i18n is not synced
-format                           Format codebase
-lint                             Lint, or catch and remove problems, in code base
-release                          Release the add-on on npmjs.org
-release-dry-run                  Dry-run the release of the add-on on npmjs.org
-test                             Run unit tests
-ci-test                          Run unit tests in CI
-backend-docker-start             Starts a Docker-based backend for development
-storybook-start                  Start Storybook server on port 6006
-storybook-build                  Build Storybook
-acceptance-frontend-dev-start    Start acceptance frontend in development mode
-acceptance-frontend-prod-start   Start acceptance frontend in production mode
-acceptance-backend-start         Start backend acceptance server
-ci-acceptance-backend-start      Start backend acceptance server in headless mode for CI
-acceptance-test                  Start Cypress in interactive mode
-ci-acceptance-test               Run cypress tests in headless mode for CI
-```
-
-### Development environment set up
-
-Install package requirements.
-
-```shell
-make install
-```
-
-### Start developing
-
-Start the backend.
-
-```shell
-make backend-docker-start
-```
-
-In a separate terminal session, start the frontend.
-
-```shell
-make start
-```
-
-### Lint code
-
-Run ESlint, Prettier, and Stylelint in analyze mode.
-
-```shell
-make lint
-```
-
-### Format code
-
-Run ESlint, Prettier, and Stylelint in fix mode.
-
-```shell
-make format
-```
-
-### i18n
-
-Extract the i18n messages to locales.
-
-```shell
-make i18n
-```
-
-### Unit tests
-
-Run unit tests.
-
-```shell
-make test
-```
-
-### Run Cypress tests
-
-Run each of these steps in separate terminal sessions.
-
-In the first session, start the frontend in development mode.
-
-```shell
-make acceptance-frontend-dev-start
-```
-
-In the second session, start the backend acceptance server.
-
-```shell
-make acceptance-backend-start
-```
-
-In the third session, start the Cypress interactive test runner.
-
-```shell
-make acceptance-test
-```
-
-## License
-
-The project is licensed under the MIT license.
 
 ## Credits and Acknowledgements 🙏
 
