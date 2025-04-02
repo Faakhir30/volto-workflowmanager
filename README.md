@@ -1,6 +1,7 @@
 # volto.workflowmanager (volto-workflowmanager)
 
 A PoC Frontend add-on of Workflow Manager for Volto. For backend add-on see https://github.com/Faakhir30/plone.workflowmanager .
+Built in 2 days, forgive me for not following plone best practices please :)
 ## Demo
 [workflowmanager-initial-poc.webm](https://github.com/user-attachments/assets/dfe130ba-b111-466b-af33-fc2550fb1406)
 
