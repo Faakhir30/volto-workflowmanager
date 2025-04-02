@@ -8,7 +8,6 @@ export const ADD_WORKFLOW = 'ADD_WORKFLOW';
 export const DELETE_WORKFLOW = 'DELETE_WORKFLOW';
 export const UPDATE_WORKFLOW_SECURITY = 'UPDATE_WORKFLOW_SECURITY';
 export const ASSIGN_WORKFLOW = 'ASSIGN_WORKFLOW';
-export const GET_WORKFLOW_GRAPH = 'GET_WORKFLOW_GRAPH';
 export const VALIDATE_WORKFLOW = 'VALIDATE_WORKFLOW';
 
 /**
@@ -103,25 +102,6 @@ export function assignWorkflow(workflowId, contentType) {
       data: {
         'selected-workflow': workflowId,
         type_id: contentType,
-      },
-    },
-  };
-}
-
-/**
- * Get workflow graph.
- * @function getWorkflowGraph
- * @param {string} workflowId - ID of workflow
- * @returns {Object} Get workflow graph action.
- */
-export function getWorkflowGraph(workflowId) {
-  return {
-    type: GET_WORKFLOW_GRAPH,
-    request: {
-      op: 'get',
-      path: '/@workflow-graph',
-      params: {
-        'selected-workflow': workflowId,
       },
     },
   };

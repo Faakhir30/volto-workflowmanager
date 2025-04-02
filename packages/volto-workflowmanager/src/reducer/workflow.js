@@ -9,7 +9,6 @@ import {
   DELETE_WORKFLOW,
   UPDATE_WORKFLOW_SECURITY,
   ASSIGN_WORKFLOW,
-  GET_WORKFLOW_GRAPH,
   VALIDATE_WORKFLOW,
 } from '../actions';
 
@@ -18,11 +17,6 @@ const initialState = {
     error: null,
     items: [],
     loaded: false,
-    loading: false,
-  },
-  graph: {
-    data: null,
-    error: null,
     loading: false,
   },
   validation: {
@@ -120,41 +114,6 @@ export default function workflow(state = initialState, action = {}) {
           result: null,
         },
       };
-
-    // Graph
-    case `${GET_WORKFLOW_GRAPH}_PENDING`:
-      return {
-        ...state,
-        graph: {
-          ...state.graph,
-          loading: true,
-          error: null,
-          data: null,
-        },
-      };
-
-    case `${GET_WORKFLOW_GRAPH}_SUCCESS`:
-      return {
-        ...state,
-        graph: {
-          ...state.graph,
-          loading: false,
-          error: null,
-          data: action.result.graph,
-        },
-      };
-
-    case `${GET_WORKFLOW_GRAPH}_FAIL`:
-      return {
-        ...state,
-        graph: {
-          ...state.graph,
-          loading: false,
-          error: action.error,
-          data: null,
-        },
-      };
-
     // Validation
     case `${VALIDATE_WORKFLOW}_PENDING`:
       return {

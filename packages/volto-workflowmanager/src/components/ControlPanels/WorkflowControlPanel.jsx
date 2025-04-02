@@ -11,9 +11,47 @@ import {
   Button,
 } from 'semantic-ui-react';
 import { getWorkflows, addWorkflow } from '../../actions';
-import CreateWorkflowModal from './CreateWorkflowModal';
-import WorkflowView from './WorkflowView';
+import CreateWorkflowModal from '../Workflow/CreateWorkflowModal';
+import WorkflowView from '../Workflow/WorkflowView';
 
+const plone_shipped_workflows = [
+  'folder_workflow',
+  'intranet_folder_workflow',
+  'intranet_workflow',
+  'one_state_workflow',
+  'plone_workflow',
+  'simple_publication_workflow',
+  'comment_review_workflow',
+  'comment_one_state_workflow',
+];
+
+const WorkflowsList = ({ workflows, handleWorkflowClick }) => {
+  return (
+    <List divided relaxed>
+      {workflows.map((workflow) => (
+        <List.Item
+          key={workflow.id}
+          onClick={() => handleWorkflowClick(workflow.id)}
+          style={{ cursor: 'pointer' }}
+        >
+          <List.Icon name="exchange" size="large" verticalAlign="middle" />
+          <List.Content>
+            <List.Header>{workflow.title || workflow.id}</List.Header>
+            <List.Description>
+              {workflow.description || 'No description available'}
+              {workflow.assigned_types?.length > 0 && (
+                <div>
+                  <strong>Assigned to: </strong>
+                  {workflow.assigned_types.join(', ')}
+                </div>
+              )}
+            </List.Description>
+          </List.Content>
+        </List.Item>
+      ))}
+    </List>
+  );
+};
 const WorkflowControlPanel = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -69,33 +107,22 @@ const WorkflowControlPanel = () => {
           {error && <Message negative content={error.message} />}
 
           {!loading && workflows?.length > 0 && (
-            <List divided relaxed>
-              {workflows.map((workflow) => (
-                <List.Item
-                  key={workflow.id}
-                  onClick={() => handleWorkflowClick(workflow.id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <List.Icon
-                    name="exchange"
-                    size="large"
-                    verticalAlign="middle"
-                  />
-                  <List.Content>
-                    <List.Header>{workflow.title || workflow.id}</List.Header>
-                    <List.Description>
-                      {workflow.description || 'No description available'}
-                      {workflow.assigned_types?.length > 0 && (
-                        <div>
-                          <strong>Assigned to: </strong>
-                          {workflow.assigned_types.join(', ')}
-                        </div>
-                      )}
-                    </List.Description>
-                  </List.Content>
-                </List.Item>
-              ))}
-            </List>
+            <>
+              <Header as="h2">Plone shipped workflows</Header>
+              <WorkflowsList
+                workflows={workflows.filter((workflow) =>
+                  plone_shipped_workflows.includes(workflow.id),
+                )}
+                handleWorkflowClick={handleWorkflowClick}
+              />
+              <Header as="h2">Custom workflows</Header>
+              <WorkflowsList
+                workflows={workflows.filter(
+                  (workflow) => !plone_shipped_workflows.includes(workflow.id),
+                )}
+                handleWorkflowClick={handleWorkflowClick}
+              />
+            </>
           )}
         </Segment>
       </Segment.Group>
